@@ -1,10 +1,11 @@
 # Unsigned distance function 
 ## Orignal Git repos
+These repos cannot be updated due to git issues. 
 https://github.com/paragpathak2006/unsigned_distance_function <br/>
 https://github.com/paragpathak2006/CudaRuntime1 <br/><br/>
 
 ## Updated Git repo
-This repo cannot be updated due to git issues. Lastest updates are in the following repo2 <br/>
+Lastest updates are in the following repo2 <br/>
 https://github.com/paragpathak2006/CudaRuntime2 <br/>
 ## Mesh
 Define a Mesh that has vertex Points Pi and Triangular faces Tj as <br/>

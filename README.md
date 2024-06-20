@@ -1,8 +1,11 @@
 # Unsigned distance function 
-## Git repos
-https://github.com/paragpathak2006/unsigned_distance_function 
-https://github.com/paragpathak2006/CudaRuntime1 
-https://github.com/paragpathak2006/CudaRuntime2 
+## Orignal Git repos
+https://github.com/paragpathak2006/unsigned_distance_function <br/>
+https://github.com/paragpathak2006/CudaRuntime1 <br/><br/>
+
+## Updated Git repo
+This repo cannot be updated due to git issues. Lastest updates are in the following repo2 <br/>
+https://github.com/paragpathak2006/CudaRuntime2 <br/>
 ## Mesh
 Define a Mesh that has vertex Points Pi and Triangular faces Tj as <br/>
 Mesh=Pi,Tj(Pa,Pb,Pc)
@@ -38,9 +41,16 @@ s=b+d-c-eb-c-a,t=b+e-a-db-c-a <br/>
 Go over all the points and faces to find the minimum possible distance dmin  between target point and mesh points.
 ## Spatial indexing approach
 Recommended approach of indexing is using octree, but in our case were going to implement a simple space map to spatially Index the mesh points. After indexing, find all the points and faces in a β sphere to minimize list of candidate Points to search.
-Spatial indexing using CUDA, requires us to implement unordered map using CUDA. A vectorized unordered map is implemented using an additional vector container for storing indexes. The program is supposed to handle each spatial index on an individual CUDA thread. However, the process of indexing is still serial, as we have assumed this will not be repeated and is not time-constrained.
+Spatial indexing using CUDA, requires us to implement unordered map using CUDA. 
+A vectorized unordered map is implemented using an additional vector container for storing indexes. 
+The program is supposed to handle each spatial index on an individual CUDA thread. 
 CUDA streams can be used to further enhance the concurrency of the data transfer process.
 ![image](https://github.com/paragpathak2006/CudaRuntime1/assets/31978917/b0443065-ff67-4f37-af8e-55b95cbc5726)
+
+## Parallel indexing of Points
+The process of indexing is also parallized using thrust. 
+This is done using sorting a point_indexes using as keys point_wise_bucket_index array.
+Then counting deferences in bucket indexes accross two consecutive elmenents to update correct buckets using cuda.
 
 ## Parallel Hashmap
 A parallelized version of Hashing was also implemented.

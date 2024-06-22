@@ -9,34 +9,36 @@ Lastest updates are in the following repo2 <br/>
 https://github.com/paragpathak2006/CudaRuntime2 <br/>
 ## Mesh
 Define a Mesh that has vertex Points Pi and Triangular faces Tj as <br/>
-Mesh=Pi,Tj(Pa,Pb,Pc)
+$$Mesh(P_i,T_j) = (P_a,P_b,P_c)$$
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
 ## Bounding box
 If point is outside a bounding BoxPi  at β distance, them point is automatically a Beta distance. <br/>
-BoxPi at β distance
+$$Box(P_i,β) = (P_{min} \pm β , P_{max} \pm β)$$
+
 ## Convex hull method
 If point is outside a bounding convex Hull Pi  at β distance, them point is automatically outside a Beta distance.  <br/>
 
 ## Pointwise distance
 Q is query point. βis maximum truncated distance. <br/>
-dmin=mind(Q,Pi),β <br/>
+$$d_{min}=\min(d(Q,P_i),β)$$ <br/>
 ## Facewise distance
 Q is query point. βis maximum truncated distance. <br/>
-dmin=mindQ,Tj,β <br/>
-Ref: Distance Between Point and Triangle in 3D (geometrictools.com) <br/>
+$$d_{min}=\min(d(Q,T_j),β)$$ <br/>
+Use Ref: Distance Between Point and Triangle in 3D (geometrictools.com) <br/>
 (https://www.geometrictools.com/Documentation/DistancePoint3Triangle3.pdf) <br/>
 
 Let Face Triangle be defined as <br/>
-Tjs,t Tjs,t= B +sE0 +tE1 ,∀ s≥0,t≥0,s+t≤1 <br/>
+$$\boldsymbol{T}_j(s,t)= \boldsymbol{B} + s\boldsymbol{E_0} +t\boldsymbol{E_1} , ∀ s≥0,t≥0  and s+t≤1$$
 
 Face Triangle to Point distance can be found using the formula<br/>
-dQ,Tj=ds,t=as2 + 2bst + ct2 + 2ds + 2et + f <br/>
-a = E0 · E0,b = E0 · E1,c = E1 · E1, <br/>
-d = E0 · B - P,e = E1 · B - P,f = (B - P) · (B - P) <br/>
-d0,t= ct2 + 2et + f→t=-ec <br/>
-ds,0=as2 + 2ds + f→s=-da <br/>
-ds,1-s=as2 + 2bs1-s+c1-s2 + 2ds+ 2e1-s+ f→ <br/>
-s=b+d-c-eb-c-a,t=b+e-a-db-c-a <br/>
-=as+b1-s-b+cs-1+d-e=a-b+cs+b-c+d-e-da <br/>
+$$d(Q,T_j)=d(s,t)=as^2 + 2bst + ct^2 + 2ds + 2et + f$$
+$$a = \boldsymbol{E_0 · E_0}, b = \boldsymbol{E_0 · E_1},c = \boldsymbol{E_1 · E_1}$$
+$$d = E0 · B - P,e = E1 · B - P,f = (B - P) · (B - P)$$
+$$d0,t= ct^2 + 2et + f→t=-ec$$
+$$ds,0=as^2 + 2ds + f→s=-da$$
+$$ds,1-s=as^2 + 2bs1-s+c1-s^2 + 2ds+ 2e1-s+ f$$
+$$s=b+d-c-eb-c-a,t=b+e-a-db-c-a$$
+$$=as+b1-s-b+cs-1+d-e=a-b+cs+b-c+d-e-da$$
 
 ## Brute force approach
 Go over all the points and faces to find the minimum possible distance dmin  between target point and mesh points.

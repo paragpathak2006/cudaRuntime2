@@ -32,8 +32,8 @@ $$\boldsymbol{T}_j(s,t)= \boldsymbol{B} + s\boldsymbol{E_0} +t\boldsymbol{E_1} ,
 
 Face Triangle to Point distance can be found using the formula<br/>
 $$d(Q,T_j)=d(s,t)=as^2 + 2bst + ct^2 + 2ds + 2et + f$$
-$$a = \boldsymbol{E_0 · E_0},\quad b = \boldsymbol{E_0 · E_1}, \quad c = \boldsymbol{E_1 · E_1}$$
-$$d = E0 · B - P, \quad e = E1 · B - P, \quad f = (B - P) · (B - P)$$
+$$a = \boldsymbol{E_0 · E_0}, \quad b = \boldsymbol{E_0 · E_1}, \quad c = \boldsymbol{E_1 · E_1}$$
+$$d = \boldsymbol{E0 · (B - P)}, \quad e = \boldsymbol{E1 · (B - P)}, \quad f = \boldsymbol{(B - P) · (B - P)$$
 $$d0,t= ct^2 + 2et + f→t=-ec$$
 $$ds,0=as^2 + 2ds + f→s=-da$$
 $$ds,1-s=as^2 + 2bs1-s+c1-s^2 + 2ds+ 2e1-s+ f$$

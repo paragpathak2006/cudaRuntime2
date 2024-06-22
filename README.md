@@ -10,7 +10,6 @@ https://github.com/paragpathak2006/CudaRuntime2 <br/>
 ## Mesh
 Define a Mesh that has vertex Points Pi and Triangular faces Tj as <br/>
 $$Mesh(P_i,T_j) = (P_a,P_b,P_c)$$
-$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
 ## Bounding box
 If point is outside a bounding BoxPi  at β distance, them point is automatically a Beta distance. <br/>
 $$Box(P_i,β) = (P_{min} \pm β , P_{max} \pm β)$$
@@ -33,12 +32,12 @@ $$\boldsymbol{T}_j(s,t)= \boldsymbol{B} + s\boldsymbol{E_0} +t\boldsymbol{E_1} ,
 Face Triangle to Point distance can be found using the formula<br/>
 $$d(Q,T_j)=d(s,t)=as^2 + 2bst + ct^2 + 2ds + 2et + f$$
 $$a = \boldsymbol{E_0 · E_0}, \quad b = \boldsymbol{E_0 · E_1}, \quad c = \boldsymbol{E_1 · E_1}$$
-$$d = \boldsymbol{E0 · (B - P)}, \quad e = \boldsymbol{E1 · (B - P)}, \quad f = \boldsymbol{(B - P) · (B - P)$$
-$$d0,t= ct^2 + 2et + f→t=-ec$$
-$$ds,0=as^2 + 2ds + f→s=-da$$
-$$ds,1-s=as^2 + 2bs1-s+c1-s^2 + 2ds+ 2e1-s+ f$$
-$$s=b+d-c-eb-c-a,t=b+e-a-db-c-a$$
-$$=as+b1-s-b+cs-1+d-e=a-b+cs+b-c+d-e-da$$
+$$d = \boldsymbol{E0 · (B - P)}, \quad e = \boldsymbol{E1 · (B - P)}, \quad f = \boldsymbol{(B - P) · (B - P)}$$
+$$d(0,t)= ct^2 + 2et + f→t=-\frac{e}{c}$$
+$$d(s,0)=as^2 + 2ds + f→s=-\frac{d}{a}$$
+$$d(s,1-s)=as^2 + 2bs1-s+c(1-s)^2 + 2ds+ 2e(1 - s)+ f$$
+$$s=\frac{b+d-c-e}{b-c-a},\quad t=\frac{b+e-a-d}{b-c-a}$$
+$$= as+b1-s-b+cs-1+d-e=a-b+cs+b-c+d-e-da$$
 
 ## Brute force approach
 Go over all the points and faces to find the minimum possible distance dmin  between target point and mesh points.

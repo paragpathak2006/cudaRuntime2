@@ -28,7 +28,7 @@ Use Ref: Distance Between Point and Triangle in 3D (geometrictools.com) <br/>
 (https://www.geometrictools.com/Documentation/DistancePoint3Triangle3.pdf) <br/>
 
 Let Face Triangle be defined as <br/>
-$$\boldsymbol{T}_j(s,t)= \boldsymbol{B} + s\boldsymbol{E_0} +t\boldsymbol{E_1} , ∀ s≥0,t≥0  and s+t≤1$$
+$$\boldsymbol{T}_j(s,t)= \boldsymbol{B} + s\boldsymbol{E_0} +t\boldsymbol{E_1} ,\space ∀ \space s≥0,\spacet≥0,\space s+t≤1$$
 
 Face Triangle to Point distance can be found using the formula<br/>
 $$d(Q,T_j)=d(s,t)=as^2 + 2bst + ct^2 + 2ds + 2et + f$$

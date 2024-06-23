@@ -205,6 +205,7 @@ void cuda_parallel_hashmap_generation(
     thrust::sequence(_ITER_(bucketwise_point_indexes), 0);
     thrust::sort_by_key(_ITER_(bucketwise_point_indexes), pointwise_bucket_indexes.begin());
 
+
     // Initialize the buckets ranges
     buckets.resize(bucket_count, Bucket(0, 0));
     buckets[bucket_count - 1] = Bucket(0, n - 1);

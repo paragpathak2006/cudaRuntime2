@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="kernel.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4c7656b5-dfbf-4da5-95ee-6d948363dc95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{e0ed44bc-13de-424b-b54d-3c662b246d94}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Input_output\Loader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Face.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Point.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Space_map2.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Thrust_lib\thrust_dist.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Thrust_lib\unsigned_distance_function.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Containers\Space_map2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Face.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Point.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Input_output\Loader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Thrust_lib\unsigned_distance_function.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

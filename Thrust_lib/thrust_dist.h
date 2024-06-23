@@ -3,6 +3,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <thrust/sort.h>
+#include <thrust/sequence.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include "../Geometry/Point.h"
@@ -119,18 +120,18 @@ struct get_hash
 
 struct get_bucket_indexes
 {
-     Bucket* buckets;
-     int *point_wise_bucket_indexes, *bucket_wise_point_indexes;
+    Bucket* buckets;
+    const int* point_wise_bucket_indexes, * bucket_wise_point_indexes;
 
-    get_bucket_indexes(Bucket* _buckets, int* _point_wise_bucket_indexes, int* _bucket_wise_point_indexes) :
-        buckets(_buckets), 
-        point_wise_bucket_indexes(_point_wise_bucket_indexes), 
+    get_bucket_indexes(Bucket* _buckets, const int* _point_wise_bucket_indexes, const int* _bucket_wise_point_indexes) :
+        buckets(_buckets),
+        point_wise_bucket_indexes(_point_wise_bucket_indexes),
         bucket_wise_point_indexes(_bucket_wise_point_indexes) {}
 
     _HOST_DEVICE_
         void operator()(int i) const {
-        auto bucket1 = point_wise_bucket_indexes[bucket_wise_point_indexes[i]];
-        auto bucket2 = point_wise_bucket_indexes[bucket_wise_point_indexes[i + 1]];
+        const auto& bucket1 = point_wise_bucket_indexes[bucket_wise_point_indexes[i]];
+        const auto& bucket2 = point_wise_bucket_indexes[bucket_wise_point_indexes[i + 1]];
 
         if (bucket1 == bucket2)
             return;
@@ -186,15 +187,16 @@ double unsigned_distance_space_map_cuda(const Points& points, const Point& targe
 
 // This hashmap is generated entirely using thrust library
 void cuda_parallel_hashmap_generation(
-    const Points& points, float map_size, int bucket_count, 
-    _BUCKETS_ buckets , _POINT_INDEXES_ bucketwise_point_indexes) {
+    const Points& points, float map_size, int bucket_count,
+    _BUCKETS_ buckets, _POINT_INDEXES_ bucketwise_point_indexes) {
 
     const int n = points.size();
     Device_Points device_points = points;
 
     // Create a poitwise ordered vector of size n
     thrust::device_vector<int> pointwise_bucket_indexes(n);
-    thrust::transform(_ITER_(device_points), pointwise_bucket_indexes.begin(),get_hash(bucket_count, map_size));
+    auto& transformation_functor = get_hash(bucket_count, map_size);
+    thrust::transform(_ITER_(device_points), pointwise_bucket_indexes.begin(), transformation_functor);
 
     // Generate the Point bucket vector
     bucketwise_point_indexes.resize(n);
@@ -202,21 +204,23 @@ void cuda_parallel_hashmap_generation(
     thrust::sort_by_key(_ITER_(bucketwise_point_indexes), pointwise_bucket_indexes.begin());
 
     // Initialize the buckets ranges
-    buckets.resize(bucket_count,Bucket(0,0));
-    buckets[bucket_count - 1]= Bucket(0, n-1);
+    buckets.resize(bucket_count, Bucket(0, 0));
+    buckets[bucket_count - 1] = Bucket(0, n - 1);
 
     // Generate the buckets ranges
-    thrust::device_vector<int> i(n);
-    thrust::sequence(_ITER_(i), 0);
-    thrust::for_each_n(i.begin(), n - 1, get_bucket_indexes(_CAST_(buckets), _CAST_(pointwise_bucket_indexes), _CAST_(bucketwise_point_indexes)));
+    thrust::device_vector<int> i(n - 1,0);
+    thrust::sequence(_ITER_(i),0);
+
+    auto& hashing_functor = get_bucket_indexes(_CAST_(buckets), _CAST_(pointwise_bucket_indexes), _CAST_(bucketwise_point_indexes));
+    thrust::for_each(_ITER_(i), hashing_functor);
 }
 
 // test code only. not for use
-//typedef vector<int> Index;
-//typedef vector<Index>   Indexes;
+// typedef vector<int> Index;
+// typedef vector<Index>   Indexes;
 //
-//typedef thrust::host_vector<Index>   HIndexes;
-//typedef thrust::device_vector<Index> DIndexes;
+// typedef thrust::host_vector<Index>   HIndexes;
+// typedef thrust::device_vector<Index> DIndexes;
 
 #define _px_ thrust::get<0>(t)
 #define _py_ thrust::get<1>(t)

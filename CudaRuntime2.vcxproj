@@ -79,6 +79,21 @@
   <ItemGroup>
     <CudaCompile Include="kernel.cu" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Containers\Space_map2.h" />
+    <ClInclude Include="Geometry\Face.h" />
+    <ClInclude Include="Geometry\Point.h" />
+    <ClInclude Include="Input_output\Loader.h" />
+    <ClInclude Include="Thrust_lib\thrust_dist.h" />
+    <ClInclude Include="Thrust_lib\unsigned_distance_function.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Containers\Space_map2.cpp" />
+    <ClCompile Include="Geometry\Face.cpp" />
+    <ClCompile Include="Geometry\Point.cpp" />
+    <ClCompile Include="Input_output\Loader.cpp" />
+    <ClCompile Include="Thrust_lib\unsigned_distance_function.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.5.targets" />

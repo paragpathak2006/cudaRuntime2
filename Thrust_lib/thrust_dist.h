@@ -182,13 +182,15 @@ double unsigned_distance_space_map_cuda(const Points& points, const Point& targe
 
 
 #define _CAST_(P) thrust::raw_pointer_cast(P.data())
-#define _BUCKETS_ thrust::device_vector<Bucket>&
-#define _POINT_INDEXES_ thrust::device_vector<int>&
+#define _CAST3_(X,Y,Z) _CAST_(X),_CAST_(Y),_CAST_(Z)
+
+typedef thrust::device_vector<Bucket> BUCKETS;
+typedef thrust::device_vector<int> POINT_INDEXES;
 
 // This hashmap is generated entirely using thrust library
 void cuda_parallel_hashmap_generation(
     const Points& points, float map_size, int bucket_count,
-    _BUCKETS_ buckets, _POINT_INDEXES_ bucketwise_point_indexes) {
+    BUCKETS& buckets, POINT_INDEXES& bucketwise_point_indexes) {
 
     const int n = points.size();
     Device_Points device_points = points;
@@ -211,7 +213,10 @@ void cuda_parallel_hashmap_generation(
     thrust::device_vector<int> i(n - 1,0);
     thrust::sequence(_ITER_(i),0);
 
-    auto& hashing_functor = get_bucket_indexes(_CAST_(buckets), _CAST_(pointwise_bucket_indexes), _CAST_(bucketwise_point_indexes));
+    auto& hashing_functor = get_bucket_indexes(_CAST3_(
+        buckets,
+        pointwise_bucket_indexes,
+        bucketwise_point_indexes));
     thrust::for_each(_ITER_(i), hashing_functor);
 }
 

@@ -34,11 +34,12 @@ Face Triangle to Point distance can be found using the formula<br/>
 $$d(Q,T_j) = d(s,t) = as^2 + 2bst + ct^2 + 2ds + 2et + f$$
 $$a = \boldsymbol{E_0 · E_0}, \quad b = \boldsymbol{E_0 · E_1}, \quad c = \boldsymbol{E_1 · E_1}$$
 $$d = \boldsymbol{E_0 · (B - P)}, \quad e = \boldsymbol{E_1 · (B - P)}, \quad f = \boldsymbol{(B - P) · (B - P)}$$
-$$d(0,t)= ct^2 + 2et + f→t=-\frac{e}{c}$$
-$$d(s,0)=as^2 + 2ds + f→s=-\frac{d}{a}$$
-$$d(s,1-s)=as^2 + 2bs1-s+c(1-s)^2 + 2ds+ 2e(1 - s)+ f$$
-$$s=\frac{b+d-c-e}{b-c-a},\quad t=\frac{b+e-a-d}{b-c-a}$$
-$$= as+b1-s-b+cs-1+d-e=a-b+cs+b-c+d-e-da$$
+$$d(0,t) = ct^2 + 2et + f→t=-\frac{e}{c}$$
+$$d(s,0) =as^2 + 2ds + f→s=-\frac{d}{a}$$
+$$d(s,1-s) = as^2 + 2bs1-s+c(1-s)^2 + 2ds+ 2e(1 - s)+ f$$
+$$s = \frac{b+d-c-e}{b-c-a},\quad t=\frac{b+e-a-d}{b-c-a}$$
+$$= as+b(1-s)-b+c(s-1)+d-e$$
+$$= a-b+cs+b-c+d-e-da$$
 
 ## Brute force approach
 Go over all the points and faces to find the minimum possible distance dmin  between target point and mesh points.
@@ -68,8 +69,8 @@ A parallelized version of Hashing was also implemented.
 #define _ITER3_(i,j,k) _ITER2_(i,j),k.begin()
 #define _CAST_(P) thrust::raw_pointer_cast(P.data())
 
-typedef BUCKETS thrust::device_vector<Bucket>
-typedef POINT_INDEXES thrust::device_vector<int>
+typedef thrust::device_vector<Bucket> BUCKETS
+typedef thrust::device_vector<int> POINT_INDEXES
 
 // This hashmap is generated entirely using thrust library
 void cuda_parallel_hashmap_generation(

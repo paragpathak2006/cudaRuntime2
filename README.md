@@ -9,7 +9,7 @@ Lastest updates are in the following repo2 <br/>
 https://github.com/paragpathak2006/CudaRuntime2 <br/>
 ## Mesh
 Define a Mesh that has vertex Points $P_i$ and Triangular faces $T_j$ as <br/>
-$$Mesh(Points,Traingles) = P_i,T_j(a,b,c)$$
+$$Mesh(Points,Traingles) = \boldsymbol{P}_i,\boldsymbol{T}_j(a,b,c)$$
 ## Bounding box
 If point is outside a bounding BoxPi  at β distance, them point is automatically a Beta distance. <br/>
 $$Box(P_i,β) = (P_{min} \pm β , P_{max} \pm β)$$

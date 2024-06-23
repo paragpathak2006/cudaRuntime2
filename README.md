@@ -63,21 +63,25 @@ A parallelized version of Hashing was also implemented.
 ## Thrust library function
 
 ```cpp
+#define _ITER_(i) i.begin(),i.end()
+#define _ITER2_(i,j) _ITER_(i),j.begin()
+#define _ITER3_(i,j,k) _ITER2_(i,j),k.begin()
 #define _CAST_(P) thrust::raw_pointer_cast(P.data())
 #define _BUCKETS_ thrust::device_vector<Bucket>&
 #define _POINT_INDEXES_ thrust::device_vector<int>&
 
 // This hashmap is generated entirely using thrust library
 void cuda_parallel_hashmap_generation(
-    const Points& points, float map_size, int bucket_count, 
-    _BUCKETS_ buckets , _POINT_INDEXES_ bucketwise_point_indexes) {
+    const Points& points, float map_size, int bucket_count,
+    _BUCKETS_ buckets, _POINT_INDEXES_ bucketwise_point_indexes) {
 
     const int n = points.size();
     Device_Points device_points = points;
 
     // Create a poitwise ordered vector of size n
     thrust::device_vector<int> pointwise_bucket_indexes(n);
-    thrust::transform(_ITER_(device_points), pointwise_bucket_indexes.begin(),get_hash(bucket_count, map_size));
+    auto& transformation_functor = get_hash(bucket_count, map_size);
+    thrust::transform(_ITER_(device_points), pointwise_bucket_indexes.begin(), transformation_functor);
 
     // Generate the Point bucket vector
     bucketwise_point_indexes.resize(n);
@@ -85,13 +89,15 @@ void cuda_parallel_hashmap_generation(
     thrust::sort_by_key(_ITER_(bucketwise_point_indexes), pointwise_bucket_indexes.begin());
 
     // Initialize the buckets ranges
-    buckets.resize(bucket_count,Bucket(0,0));
-    buckets[bucket_count - 1]= Bucket(0, n-1);
+    buckets.resize(bucket_count, Bucket(0, 0));
+    buckets[bucket_count - 1] = Bucket(0, n - 1);
 
     // Generate the buckets ranges
-    thrust::device_vector<int> i(n-1);
-    thrust::sequence(_ITER_(i), 0);
-    thrust::for_each_n(_ITER_(i), get_bucket_indexes(_CAST_(buckets), _CAST_(pointwise_bucket_indexes), _CAST_(bucketwise_point_indexes)));
+    thrust::device_vector<int> i(n - 1,0);
+    thrust::sequence(_ITER_(i),0);
+
+    auto& hashing_functor = get_bucket_indexes(_CAST_(buckets), _CAST_(pointwise_bucket_indexes), _CAST_(bucketwise_point_indexes));
+    thrust::for_each(_ITER_(i), hashing_functor);
 }
 ```
 

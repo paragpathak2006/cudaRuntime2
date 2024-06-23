@@ -9,10 +9,10 @@ Lastest updates are in the following repo2 <br/>
 https://github.com/paragpathak2006/CudaRuntime2 <br/>
 ## Mesh
 Define a Mesh that has vertex Points $P_i$ and Triangular faces $T_j$ as <br/>
-$$Mesh(Points,Traingles) = \boldsymbol{P}_i,\boldsymbol{T}_j(a,b,c)$$
+$$Mesh = \boldsymbol{P}_i(x,y,z), \space \boldsymbol{T}_j(a,b,c)$$
 ## Bounding box
 If point is outside a bounding BoxPi  at β distance, them point is automatically a Beta distance. <br/>
-$$Box(P_i,β) = (P_{min} \pm β , P_{max} \pm β)$$
+$$Box(\boldsymbol{P},\boldsymbol{β}) = {\boldsymbol P_{min}}-\boldsymbol{β},\boldsymbol P_{max} + \boldsymbol{β}$$
 
 ## Convex hull method
 If point is outside a bounding convex Hull $P_i$  at β distance, them point is automatically outside a Beta distance.  <br/>

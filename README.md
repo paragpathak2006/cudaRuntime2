@@ -96,7 +96,10 @@ void cuda_parallel_hashmap_generation(
     thrust::device_vector<int> i(n - 1,0);
     thrust::sequence(_ITER_(i),0);
 
-    auto& hashing_functor = get_bucket_indexes(_CAST_(buckets), _CAST_(pointwise_bucket_indexes), _CAST_(bucketwise_point_indexes));
+    auto& hashing_functor = get_bucket_indexes(
+        _CAST_(buckets),
+        _CAST_(pointwise_bucket_indexes),
+        _CAST_(bucketwise_point_indexes));
     thrust::for_each(_ITER_(i), hashing_functor);
 }
 ```

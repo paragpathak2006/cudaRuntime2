@@ -47,6 +47,7 @@ struct Hash_of_Point_index {
 
 struct Bucket {
     int first = -1, count = -1;
+    int back_index = -1;
     Bucket() {  first = -1; count = -1; }
     Bucket(int _first, int _count) : first(_first), count(_count) {}
 };

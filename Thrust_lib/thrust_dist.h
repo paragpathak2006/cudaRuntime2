@@ -184,26 +184,24 @@ double unsigned_distance_space_map_cuda(const Points& points, const Point& targe
 #define _CAST_(P) thrust::raw_pointer_cast(P.data())
 #define _CAST3_(X,Y,Z) _CAST_(X),_CAST_(Y),_CAST_(Z)
 
-typedef thrust::device_vector<Bucket> BUCKETS;
-typedef thrust::device_vector<int> POINT_INDEXES;
 
 // This hashmap is generated entirely using thrust library
 void cuda_parallel_hashmap_generation(
     const Points& points, float map_size, int bucket_count,
-    BUCKETS& buckets, POINT_INDEXES& bucketwise_point_indexes) {
+    thrust::device_vector<Bucket>& buckets, thrust::device_vector<int>& point_final_location) {
 
     const int n = points.size();
     Device_Points device_points = points;
 
     // Create a poitwise ordered vector of size n
-    thrust::device_vector<int> pointwise_bucket_indexes(n);
+    thrust::device_vector<int> point_bucket_number(n);
     auto& transformation_functor = get_hash(bucket_count, map_size);
-    thrust::transform(_ITER_(device_points), pointwise_bucket_indexes.begin(), transformation_functor);
+    thrust::transform(_ITER_(device_points), point_bucket_number.begin(), transformation_functor);
 
     // Generate the Point bucket vector
-    bucketwise_point_indexes.resize(n);
-    thrust::sequence(_ITER_(bucketwise_point_indexes), 0);
-    thrust::sort_by_key(_ITER_(bucketwise_point_indexes), pointwise_bucket_indexes.begin());
+    point_final_location.resize(n);
+    thrust::sequence(_ITER_(point_final_location), 0);
+    thrust::sort_by_key(_ITER_(point_final_location), point_bucket_number.begin());
 
 
     // Initialize the buckets ranges
@@ -216,10 +214,87 @@ void cuda_parallel_hashmap_generation(
 
     auto& hashing_functor = get_bucket_indexes(_CAST3_(
         buckets,
-        pointwise_bucket_indexes,
-        bucketwise_point_indexes));
+        point_bucket_number,
+        point_final_location));
     thrust::for_each(_ITER_(i), hashing_functor);
 }
+
+// This hashmap is generated entirely using thrust library
+
+#define _NULL_ -1
+struct is_null_value {
+    __host__ __device__
+        bool operator()(const int& x) {
+        return x == _NULL_;
+    }
+};
+
+void cuda_parallel_hashmap_generation(
+    const Points& points, float map_size, int bucket_count,
+    thrust::device_vector<Bucket> & buckets, 
+    thrust::device_vector<int>& point_final_location) {
+
+    const int n = points.size();
+
+    // Initialize the buckets ranges
+    buckets.resize(bucket_count, Bucket(0, 0));
+    buckets[bucket_count - 1] = Bucket(0, n - 1);
+
+    thrust::device_vector<Point> device_points = points;
+    thrust::device_vector<int> point_bucket_number(n);
+    thrust::device_vector<int> point_bucket_counter(n, _NULL_);
+    thrust::device_vector<int> bucket_counter(buckets.size(), 0);
+    thrust::device_vector<int> pi(n, 0);
+    thrust::sequence(_ITER_(pi), 0);
+
+    auto& transformation_functor = get_hash(bucket_count, map_size);
+    thrust::transform(_ITER_(device_points), point_bucket_number.begin(), transformation_functor);
+
+    int* point_bucket_number_p = point_bucket_number.data().get();
+    int* point_final_location_p = point_final_location.data().get();
+    Bucket* bucket_p = buckets.data().get();
+
+    int iter = 0;
+    while(iter <5)
+    {
+        thrust::for_each(_ITER_(pi), [point_final_location_p , bucket_p, point_bucket_number_p](int index) {
+            if (point_final_location_p[index] == _NULL_)
+                bucket_p[point_bucket_number_p[index]].back_index = index;
+        });
+
+        thrust::for_each(_ITER_(buckets), [point_final_location_p] (Bucket &bucket) {
+            if (point_final_location_p[bucket.back_index] == _NULL_) {
+                point_final_location_p[bucket.back_index] = bucket.count;
+                bucket.count++;
+            }
+        });
+
+        auto it = thrust::find_if(_ITER_(point_final_location), is_null_value());
+        if (it == point_final_location.end())
+            break;
+
+        iter++;
+    }
+    
+    thrust::transform(_ITER_(buckets), bucket_counter.begin(), [](const Bucket &bucket) {return bucket.count;});
+    thrust::inclusive_scan(_ITER_(bucket_counter), bucket_counter);
+
+    int* bucket_counter_p = bucket_counter.data().get();
+    int* point_final_location_p = point_final_location.data().get();
+
+    thrust::for_each(_ITER_(pi), [point_final_location_p, bucket_counter_p, point_bucket_number_p](int index) {
+        point_final_location_p[index] += bucket_counter_p[point_bucket_number_p[index]];
+    });
+
+    auto& hashing_functor = get_bucket_indexes(_CAST3_(
+        buckets,
+        point_bucket_number,
+        point_final_location));
+    thrust::for_each(_ITER_(pi), hashing_functor);
+}
+
+
+
 
 // test code only. not for use
 // typedef vector<int> Index;
